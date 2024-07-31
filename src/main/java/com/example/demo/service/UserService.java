@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.Wrapper;
+import com.example.demo.common.Wrapper;
 import com.example.demo.facotry.StatementTemplateFactory;
 import com.example.demo.model.User;
 import com.example.demo.templates.StatementTemplate;
@@ -31,6 +31,21 @@ public class UserService {
             }
         default -> List.of(new User());
         };
+    }
+
+    public User updateUserAndGet(Long id, Wrapper<String> newLogin) {
+        var STATEMENT = getStatement();
+
+        try {
+            STATEMENT."""
+            UPDATE users
+            SET login = '\{newLogin.getData()}'
+            WHERE id = \{id}""".getFirst();
+        } catch (Exception e) {
+
+        }
+
+        return STATEMENT."select * from users where id = \{id}".getFirst();
     }
 
     private StatementTemplate<User> getStatement() {
